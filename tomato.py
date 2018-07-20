@@ -1,7 +1,20 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+'''
+Date: 2018-07-20
+Author: Lin Gang
+Email: gang868@gmail.com
+Description: Tomato alarm clock
+Version: 1.1
+'''
+
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QLCDNumber, QSystemTrayIcon, QMenu, QAction
 from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtGui import QPalette, QFont, QIcon
-import sys, playsound
+import sys, playsound, os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 class Tomato(QWidget):
@@ -20,7 +33,7 @@ class Tomato(QWidget):
         self.setWindowTitle("番茄工作法计时器")
         self.setGeometry(0, 0, 400, 250)
 
-        self.icon = QIcon('tomato.svg')
+        self.icon = QIcon(os.path.join(BASE_DIR, 'tomato.svg'))
         self.setWindowIcon(self.icon)
 
         self.tray = QSystemTrayIcon()
@@ -134,10 +147,10 @@ class Tomato(QWidget):
     def alarm(self, status, times=10):
         if status == 'Work':
             for i in range(times):
-                playsound.playsound('bark.ogg')
+                playsound.playsound(os.path.join(BASE_DIR, 'bark.ogg'))
         else:
             for i in range(times):
-                playsound.playsound('drip.ogg')
+                playsound.playsound(os.path.join(BASE_DIR, 'drip.ogg'))
 
 
 if __name__ == "__main__":
