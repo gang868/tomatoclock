@@ -17,7 +17,7 @@
 - 声音文件：drip.ogg，bark.ogg
 - 程序图标：tomato.svg
 
-### (三)运行环境
+### (三)运行和配置
 
 下面后直接运行tomato.py文件，需要以下环境：
 - python3.5
@@ -25,6 +25,15 @@
 ```bash
 pip3 install PyQt5
 pip3 install playsound
+```
+- 设置tomato.py的直接运行权限
+进入tomato.py所在的目录
+```bash
+chmod u+x tomato.py
+```
+- 设置快捷方式（ubuntu linux)
+```bash
+cp Tomato.desptop /usr/share/applications/
 ```
 
 ## 二、番茄工作法的介绍
