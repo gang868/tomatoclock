@@ -22,7 +22,7 @@ class Tomato(QWidget):
         super().__init__()
         self.work = 25  # 番茄钟时间25分钟
         self.second_remain = self.work * 60
-        self.round = 0
+        self.round = 1
         self.rest = 5  # 休息时间5分钟
         self.round_rest = 30  # 1轮4个番茄钟休息30分钟
         self.current_status = "Work"
@@ -41,7 +41,7 @@ class Tomato(QWidget):
         self.restoreAction = QAction('显示', self, triggered=self.show)
         self.quitAction = QAction('退出', self, triggered=app.quit)
 
-        self.tipAction = QAction("%s/%d > %2d:%02d" % (self.current_status, self.round + 1, self.second_remain // 60, self.second_remain % 60), self, triggered=self.show)
+        self.tipAction = QAction("%s/%d > %2d:%02d" % (self.current_status, self.round, self.second_remain // 60, self.second_remain % 60), self, triggered=self.show)
         self.tray_menu.addAction(self.tipAction)
         self.tray_menu.addAction(self.restoreAction)
         self.tray_menu.addAction(self.quitAction)
@@ -109,7 +109,7 @@ class Tomato(QWidget):
                     playsound.playsound(os.path.join(BASE_DIR, 'bark.mp3'))
                 self.pe.setColor(QPalette.Window, Qt.darkGreen)
                 self.current_status = "Rest"
-                if self.round % 4 == 0:
+                if self.round!=0 and self.round % 4 == 0:
                     self.second_remain = self.round_rest * 60
                 else:
                     self.second_remain = self.rest * 60
@@ -123,9 +123,9 @@ class Tomato(QWidget):
             self.timer.start()
 
         self.labelRound.setPalette(self.pe)
-        self.labelRound.setText("Round {0}-{1}".format(self.round + 1, self.current_status))
+        self.labelRound.setText("Round {0}-{1}".format(self.round, self.current_status))
         self.clock.display("%2d:%02d" % (self.second_remain // 60, self.second_remain % 60))
-        self.tipAction.setText("%s/%d > %2d:%02d" % (self.current_status, self.round + 1, self.second_remain // 60, self.second_remain % 60))
+        self.tipAction.setText("%s/%d > %2d:%02d" % (self.current_status, self.round, self.second_remain // 60, self.second_remain % 60))
 
     def start(self):
         # 启动定时器
@@ -139,6 +139,9 @@ class Tomato(QWidget):
         self.round = 0
         self.second_remain = self.work * 60
         self.current_status = 'Work'
+        self.pe.setColor(QPalette.Window, Qt.darkRed)
+        self.labelRound.setText("准备开始番茄钟")
+        self.labelRound.setPalette(self.pe)
         self.clock.display("%2d:%02d" % (self.work, 0))
         self.startButton.setEnabled(True)
         self.pauseButton.setEnabled(False)
