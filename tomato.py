@@ -15,11 +15,13 @@ from PyQt5.QtGui import QPalette, QFont, QIcon
 import sys, playsound, os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+OPACITY = 0.6
 
 
 class Tomato(QWidget):
-    def __init__(self):
+    def __init__(self, app:QApplication):
         super().__init__()
+        self.app = app
         self.work = 25  # 番茄钟时间25分钟
         self.second_remain = self.work * 60
         self.round = 0
@@ -30,7 +32,18 @@ class Tomato(QWidget):
 
     def initUI(self):
         self.setWindowTitle("番茄工作法计时器")
-        self.setGeometry(0, 0, 400, 250)
+        deskRect = self.app.desktop().availableGeometry()
+        # 右下角显示, 可能往右超出一部分, 原因未知
+        w = 400
+        h = 250
+        x = deskRect.width() - w - 1
+        y = deskRect.height() - h - 1
+        # self.setGeometry(0, 0, 400, 250)
+        self.setGeometry(x, y, w, h)
+        # self.setWindowOpacity(OPACITY)
+        # 窗体置顶
+        self.setWindowFlags(Qt.WindowStaysOnTopHint)
+
         # 设置番茄图标（程序和托盘）
         self.icon = QIcon(os.path.join(BASE_DIR, 'tomato.svg'))
         self.setWindowIcon(self.icon)
@@ -67,6 +80,10 @@ class Tomato(QWidget):
         vbox.addWidget(self.labelRound)
         # 倒计时显示器
         self.clock = QLCDNumber(self)  # 剩余时间显示组件
+        # 没有效果?
+        # clockFont = QFont('Microsoft YaHei', 10, 75)
+        # clockFont.setBold(800)
+        # self.clock.setFont(clockFont)
         self.clock.display("%2d:%02d" % (self.work, 0))
         vbox.addWidget(self.clock)
 
@@ -98,6 +115,12 @@ class Tomato(QWidget):
         # 点击关闭按钮即隐藏主窗体
         self.hide()
 
+    def playSound(self, fileName):
+        try:
+            playsound.playsound(os.path.join(BASE_DIR, fileName))
+        except Exception as ex:
+            print("playsound exception: %s" % ex)
+
     def onTimer(self):
         # 工作状态
         self.second_remain -= 1
@@ -107,7 +130,8 @@ class Tomato(QWidget):
             self.round += 1
             if self.current_status == "Work":
                 for i in range(10):
-                    playsound.playsound(os.path.join(BASE_DIR, 'bark.ogg'))
+                    # playsound.playsound(os.path.join(BASE_DIR, 'bark.ogg'))
+                    self.playSound('bark.ogg')
                 self.pe.setColor(QPalette.Window, Qt.darkGreen)
                 self.current_status = "Rest"
                 if self.round % 4 == 0:
@@ -116,7 +140,8 @@ class Tomato(QWidget):
                     self.second_remain = self.rest * 60
             else:
                 for i in range(10):
-                    playsound.playsound(os.path.join(BASE_DIR, 'drip.ogg'))
+                    #playsound.playsound(os.path.join(BASE_DIR, 'drip.ogg'))
+                    self.playSound('drip.ogg')
                 self.pe.setColor(QPalette.Window, Qt.darkRed)
                 self.current_status = "Work"
                 self.second_remain = self.work * 60
@@ -151,8 +176,16 @@ class Tomato(QWidget):
         self.stopButton.setEnabled(True)
         self.timer.stop()
 
+    # def enterEvent(self, event: QtCore.QEvent) -> None:
+    #     # self.setWindowOpacity(1)
+    #     print("enterEvent", event)
+    # def leaveEvent(self, event: QtCore.QEvent) -> None:
+    #     self.setWindowOpacity(OPACITY)
+    # 添加 复写 窗口状态改变 函数
+    # def changeEvent(self, event):
+    #     print(event)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    tomato = Tomato()
+    tomato = Tomato(app)
     sys.exit(app.exec_())
