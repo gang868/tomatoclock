@@ -5,3 +5,8 @@
 pip3 install --upgrade wheel
 pip3 install playsound
 ```
+
+- 编译
+```
+pyinstaller tomato.py --onefile --noconsole --noupx --clean
+```

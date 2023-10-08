@@ -81,14 +81,17 @@ class Tomato(QWidget):
         # 提示标签
         self.labelRound = QLabel(self)  # 提示标签
         self.labelRound.setText("准备开始番茄钟")
-        self.labelRound.setFixedHeight(50)
+        # self.labelRound.setFixedHeight(50)
+        self.labelRound.setMaximumHeight(40)
         self.labelRound.setAlignment(Qt.AlignCenter)
         self.pe = QPalette()
         self.pe.setColor(QPalette.Window, Qt.darkRed)  # 蓝底白字
         self.pe.setColor(QPalette.WindowText, Qt.white)
         self.labelRound.setAutoFillBackground(True)
         self.labelRound.setPalette(self.pe)
-        self.labelRound.setFont(QFont("Courier", 20, QFont.Courier))
+        label_round_font = QFont("Courier", 10, QFont.Courier)
+        label_round_font.setPointSize(10)
+        self.labelRound.setFont(label_round_font)
 
         vbox.addWidget(self.labelRound)
         # 倒计时显示器
@@ -310,6 +313,7 @@ class Tomato(QWidget):
     #     print(event)
 
 if __name__ == "__main__":
+    # QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
     app = QApplication(sys.argv)
     tomato = Tomato(app)
     sys.exit(app.exec_())
