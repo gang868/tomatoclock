@@ -13,14 +13,17 @@ from enum import Enum
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QLCDNumber, QSystemTrayIcon, QMenu, QAction
 from PyQt5.QtCore import QTimer, Qt
-from PyQt5.QtGui import QPalette, QFont, QIcon
+from PyQt5.QtGui import QPalette, QFont, QIcon, QPixmap
 import sys, playsound, os
-from qfluentwidgets import (CommandBar, Action)
-from qfluentwidgets import FluentIcon as FIF
+# from qfluentwidgets import (CommandBar, Action)
+# from qfluentwidgets import FluentIcon as FIF
+import image_rc
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 OPACITY = 0.6
+WIDTH = 300
+HEIGHT = 300
 
 class WorkStatus(Enum):
     WORK = ("work", "工作")
@@ -43,8 +46,8 @@ class Tomato(QWidget):
         self.setWindowTitle("番茄工作法计时器")
         deskRect = self.app.desktop().availableGeometry()
         # 右下角显示, 可能往右超出一部分, 原因未知
-        w = 400
-        h = 250
+        w = WIDTH
+        h = HEIGHT
         x = deskRect.width() - w - 1
         y = deskRect.height() - h - 1
         # self.setGeometry(0, 0, 400, 250)
@@ -54,7 +57,9 @@ class Tomato(QWidget):
         # self.setWindowFlags(Qt.WindowStaysOnTopHint)
 
         # 设置番茄图标（程序和托盘）
-        self.icon = QIcon(os.path.join(BASE_DIR, 'tomato.svg'))
+        # self.icon = QIcon(os.path.join(BASE_DIR, 'tomato.svg'))
+        iconPixmap = QPixmap(":/tomato.svg")
+        self.icon = QIcon(iconPixmap)
         self.setWindowIcon(self.icon)
         # 设置托盘功能（显示计时、还原窗体和退出程序）
         self.tray = QSystemTrayIcon()
@@ -100,6 +105,7 @@ class Tomato(QWidget):
         # clockFont = QFont('Microsoft YaHei', 10, 75)
         # clockFont.setBold(800)
         # self.clock.setFont(clockFont)
+        # self.clock.setStyleSheet("color:darkRed")
         self.clock.display("%2d:%02d" % (self.work, 0))
         vbox.addWidget(self.clock)
 
@@ -133,45 +139,45 @@ class Tomato(QWidget):
         self.tray.show()
         self.show()
 
-    def createCommandBar(self):
-        self.commandBar = bar = CommandBar(self)
-        bar.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-        addAction = Action(FIF.ADD, self.tr('Add'))
-        addAction.triggered.connect(lambda: print("Adddddddddddddddd"))
-        self.closeAction = closeAction = Action(FIF.CLOSE, self.tr('Close'))
-        closeAction.triggered.connect(self.close)
-        self.minAction = minAction = Action(FIF.MINIMIZE, self.tr('Minimize'))
-        # minAction.setIcon()
-        minAction.triggered.connect(self.showMinimized)
-        self.maxAction = maxAction = Action(FIF.FULL_SCREEN, self.tr('FullScreen'))
-        maxAction.triggered.connect(self.switchMaxNormal)
-        maxAction.setObjectName("maxAction")
-        self.normalAction = normalAction = Action(FIF.BACK_TO_WINDOW, self.tr('BackToWindow'))
-        normalAction.triggered.connect(self.switchMaxNormal)
-        normalAction.setObjectName("normalAction")
-        bar.setWindowTitle("xxxxxxxxxxxx")
-        bar.addActions([
-            minAction,
-            # normalAction,
-            maxAction,
-            closeAction,
-            # Action(FIF.ROTATE, self.tr('Rotate')),
-            # Action(FIF.ZOOM_IN, self.tr('Zoom in')),
-            # Action(FIF.ZOOM_OUT, self.tr('Zoom out')),
-        ])
-        # bar.addSeparator()
-
-        # add custom widget
-        # button = TransparentDropDownPushButton(self.tr('Sort'), self, FIF.SCROLL)
-        # button.setMenu(self.createCheckableMenu())
-        # button.setFixedHeight(34)
-        # setFont(button, 12)
-        # bar.addWidget(button)
-
-        # bar.addHiddenActions([
-        #     Action(FIF.SETTING, self.tr('Settings'), shortcut='Ctrl+I'),
-        # ])
-        return bar
+    # def createCommandBar(self):
+    #     self.commandBar = bar = CommandBar(self)
+    #     bar.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+    #     addAction = Action(FIF.ADD, self.tr('Add'))
+    #     addAction.triggered.connect(lambda: print("Adddddddddddddddd"))
+    #     self.closeAction = closeAction = Action(FIF.CLOSE, self.tr('Close'))
+    #     closeAction.triggered.connect(self.close)
+    #     self.minAction = minAction = Action(FIF.MINIMIZE, self.tr('Minimize'))
+    #     # minAction.setIcon()
+    #     minAction.triggered.connect(self.showMinimized)
+    #     self.maxAction = maxAction = Action(FIF.FULL_SCREEN, self.tr('FullScreen'))
+    #     maxAction.triggered.connect(self.switchMaxNormal)
+    #     maxAction.setObjectName("maxAction")
+    #     self.normalAction = normalAction = Action(FIF.BACK_TO_WINDOW, self.tr('BackToWindow'))
+    #     normalAction.triggered.connect(self.switchMaxNormal)
+    #     normalAction.setObjectName("normalAction")
+    #     bar.setWindowTitle("xxxxxxxxxxxx")
+    #     bar.addActions([
+    #         minAction,
+    #         # normalAction,
+    #         maxAction,
+    #         closeAction,
+    #         # Action(FIF.ROTATE, self.tr('Rotate')),
+    #         # Action(FIF.ZOOM_IN, self.tr('Zoom in')),
+    #         # Action(FIF.ZOOM_OUT, self.tr('Zoom out')),
+    #     ])
+    #     # bar.addSeparator()
+    #
+    #     # add custom widget
+    #     # button = TransparentDropDownPushButton(self.tr('Sort'), self, FIF.SCROLL)
+    #     # button.setMenu(self.createCheckableMenu())
+    #     # button.setFixedHeight(34)
+    #     # setFont(button, 12)
+    #     # bar.addWidget(button)
+    #
+    #     # bar.addHiddenActions([
+    #     #     Action(FIF.SETTING, self.tr('Settings'), shortcut='Ctrl+I'),
+    #     # ])
+    #     return bar
 
     # 判断最大化，还是窗口化
     def switchMaxNormal(self):
@@ -219,6 +225,7 @@ class Tomato(QWidget):
                     # playsound.playsound(os.path.join(BASE_DIR, 'bark.ogg'))
                     self.playSound('bark.ogg')
                 self.pe.setColor(QPalette.Window, Qt.darkGreen)
+                self.clock.setStyleSheet("color:darkGreen")
                 self.current_status = "Rest"
                 if self.round % 4 == 0:
                     self.second_remain = self.round_rest * 60
@@ -291,13 +298,18 @@ class Tomato(QWidget):
         self.setVisible(True)
 
     def toggleHideSome(self, is_hide=None):
+        """比如在置顶时, 隐藏一些非重要部件"""
         is_hide = is_hide if is_hide is not None else self.is_top_hint
         if is_hide:
             self.startPauseButton.setVisible(False)
             self.stopButton.setVisible(False)
+            self.topHintButton.setVisible(False)
+            self.labelRound.setVisible(False)
         else:
             self.startPauseButton.setVisible(True)
             self.stopButton.setVisible(True)
+            self.topHintButton.setVisible(True)
+            self.labelRound.setVisible(True)
 
     def enterEvent(self, event: QtCore.QEvent) -> None:
         # self.setWindowOpacity(1)
