@@ -236,6 +236,7 @@ class Tomato(QWidget):
                     #playsound.playsound(os.path.join(BASE_DIR, 'drip.ogg'))
                     self.playSound('drip.ogg')
                 self.pe.setColor(QPalette.Window, Qt.darkRed)
+                self.clock.setStyleSheet("color:none")
                 self.current_status = "Work"
                 self.second_remain = self.work * 60
             self.timer.start()
