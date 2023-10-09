@@ -12,4 +12,6 @@ def playSound(fileName):
         print("playsound exception:", ex)
 
 if __name__ == '__main__':
-    playSound('bark.ogg')
+    # playSound('bark.ogg')
+    playSound("bark.mp3")
+    playSound("drip.mp3")

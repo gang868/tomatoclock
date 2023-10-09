@@ -223,7 +223,7 @@ class Tomato(QWidget):
             if self.current_status == "Work":
                 for i in range(10):
                     # playsound.playsound(os.path.join(BASE_DIR, 'bark.ogg'))
-                    self.playSound('bark.ogg')
+                    self.playSound('bark.mp3')
                 self.pe.setColor(QPalette.Window, Qt.darkGreen)
                 self.clock.setStyleSheet("color:darkGreen")
                 self.current_status = "Rest"
@@ -234,7 +234,7 @@ class Tomato(QWidget):
             else:
                 for i in range(10):
                     #playsound.playsound(os.path.join(BASE_DIR, 'drip.ogg'))
-                    self.playSound('drip.ogg')
+                    self.playSound('drip.mp3')
                 self.pe.setColor(QPalette.Window, Qt.darkRed)
                 self.clock.setStyleSheet("color:none")
                 self.current_status = "Work"
