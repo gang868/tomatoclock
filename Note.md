@@ -9,5 +9,15 @@ pip3 install playsound
 - 打包
 
 ```
+# 生成 spec (一次就可以了, 后续可以不用重复生成)
 pyinstaller tomato.py -n 番茄时钟 --onefile --noconsole --noupx --clean
+# 基于 spec 打包
+pyinstaller 番茄时钟.spec
+# -F 选项不要, 否则 makespec options not valid when a .spec file is given
 ```
+
+- 关于音频打包
+
+spec 修改 `datas=[('resource','resource')]`.
+音频文件放在 resource 里.
+同理, 有其他文件也可以放在这里.

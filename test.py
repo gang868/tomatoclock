@@ -13,5 +13,6 @@ def playSound(fileName):
 
 if __name__ == '__main__':
     # playSound('bark.ogg')
-    playSound("bark.mp3")
-    playSound("drip.mp3")
+    playSound("resource/rest-hint.mp3")
+    playSound("resource/drip.mp3")
+    # playsound.playsound("C:\\Users\\nisus\\Downloads\\Music\\菜鸟图库-蛐蛐有规律吱.mp3")
