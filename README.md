@@ -14,7 +14,7 @@
 
 - <置顶>或<取消置顶>。置顶时，鼠标移出后隐藏次要信息，如按钮等，窗体半透明；鼠标移入恢复正常。
 
-![动画演示](./doc/tomato clock demo.gif)
+![动画演示](./doc/tomato-clock-demo.gif)
 
 ### （二）软件结构
 - 主程序：tomato.py
