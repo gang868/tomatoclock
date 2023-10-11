@@ -1,0 +1,15 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+playsound = "==1.3.0"
+pyqt5 = "==5.15.9"
+pyqt5-sip = "==12.12.2"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"
+python_full_version = "3.11.4"
