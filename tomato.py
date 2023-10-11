@@ -21,7 +21,7 @@ import image_rc
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-OPACITY = 0.6
+OPACITY = 0.5
 WIDTH = 300
 HEIGHT = 300
 
@@ -39,6 +39,7 @@ class Tomato(QWidget):
         self.rest = 5  # 休息时间5分钟
         self.round_rest = 30  # 1轮4个番茄钟休息30分钟
         self.current_status = "Work"
+        # 是否"置顶"
         self.is_top_hint = False
         self.initUI()
 
@@ -313,12 +314,14 @@ class Tomato(QWidget):
             self.labelRound.setVisible(True)
 
     def enterEvent(self, event: QtCore.QEvent) -> None:
-        # self.setWindowOpacity(1)
-        # print("enterEvent", event)
+        if self.is_top_hint:
+            self.setWindowOpacity(1)
         self.toggleHideSome(False)
 
     def leaveEvent(self, event: QtCore.QEvent) -> None:
-        # self.setWindowOpacity(OPACITY)
+        # 若是"置顶", 鼠标离开降低透明度
+        if self.is_top_hint:
+            self.setWindowOpacity(OPACITY)
         self.toggleHideSome()
 
     # 添加 复写 窗口状态改变 函数
