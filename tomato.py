@@ -265,6 +265,9 @@ class Tomato(QWidget):
         self.stopButton.setEnabled(False)
         self.timer.stop()
         self.startPauseButton.setText('开始')
+        self.pe.setColor(QPalette.Window, Qt.darkRed)
+        self.clock.setStyleSheet("color:none")
+        self.labelRound.setPalette(self.pe)
 
     def pause(self):
         self.startButton.setEnabled(True)
