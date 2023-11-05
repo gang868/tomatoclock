@@ -11,32 +11,34 @@ Version: 1.1
 from enum import Enum
 
 from PyQt5 import QtCore
+from PyQt5.QtNetwork import QLocalSocket, QLocalServer
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QLCDNumber, QSystemTrayIcon, QMenu, QAction
 from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtGui import QPalette, QFont, QIcon, QPixmap
 import sys, playsound, os
 # from qfluentwidgets import (CommandBar, Action)
 # from qfluentwidgets import FluentIcon as FIF
-import image_rc
+import image_rc  # 导入资源, 不可删除
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 OPACITY = 0.5
 WIDTH = 300
 HEIGHT = 300
+# 休息时间5分钟
+REST_DURATION = 5
+# 番茄钟时间25分钟
+WORK_DURATION = 25
 
-class WorkStatus(Enum):
-    WORK = ("work", "工作")
-    REST = ("rest", "休息")
 
 class Tomato(QWidget):
     def __init__(self, app:QApplication):
         super().__init__()
         self.app = app
-        self.work = 25  # 番茄钟时间25分钟
+        self.work = WORK_DURATION
         self.second_remain = self.work * 60
         self.round = 0
-        self.rest = 5  # 休息时间5分钟
+        self.rest = REST_DURATION
         self.round_rest = 30  # 1轮4个番茄钟休息30分钟
         self.current_status = "Work"
         # 是否"置顶"
@@ -75,9 +77,7 @@ class Tomato(QWidget):
         self.tray_menu.addAction(self.quitAction)
         self.tray.setContextMenu(self.tray_menu)
         # 设置定时器
-        self.timer = QTimer()  # 初始化计时器
-        self.timer.setInterval(1000)  # 每秒跳1次
-        self.timer.timeout.connect(self.onTimer)  # 绑定定时触发事件
+        self.settingTimer()
 
         vbox = QVBoxLayout()
 
@@ -214,6 +214,11 @@ class Tomato(QWidget):
         except Exception as ex:
             print("playsound exception: %s" % ex)
 
+    def settingTimer(self):
+        self.timer = QTimer()  # 初始化计时器
+        self.timer.setInterval(1000)  # 每秒跳1次
+        self.timer.timeout.connect(self.onTimer)  # 绑定定时触发事件
+
     def onTimer(self):
         # 工作状态
         self.second_remain -= 1
@@ -232,6 +237,7 @@ class Tomato(QWidget):
                     self.second_remain = self.round_rest * 60
                 else:
                     self.second_remain = self.rest * 60
+                self.timer.start()
             else:
                 for i in range(10):
                     #playsound.playsound(os.path.join(BASE_DIR, 'drip.ogg'))
@@ -240,7 +246,9 @@ class Tomato(QWidget):
                 self.clock.setStyleSheet("color:none")
                 self.current_status = "Work"
                 self.second_remain = self.work * 60
-            self.timer.start()
+                # 一轮 工作-休息 结束后自动暂停, 等待用户手动开始下一轮 工作-休息 周期, 因为实际使用感受, 自动下一轮, 难度还是蛮大的(个人感觉)
+                self.toggleStartPause()
+            # self.timer.start()
 
         self.labelRound.setPalette(self.pe)
         self.labelRound.setText("Round {0}-{1}".format(self.round + 1, self.current_status))
@@ -334,5 +342,16 @@ class Tomato(QWidget):
 if __name__ == "__main__":
     # QApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
     app = QApplication(sys.argv)
-    tomato = Tomato(app)
-    sys.exit(app.exec_())
+    appName = "TomatoClockPyQt"
+    socket = QLocalSocket()
+    socket.connectToServer(appName)
+    if socket.waitForConnected(1000):
+        # 正常连接, 则说明实例已经运行, 本次是第二次的, 退出
+        app.quit()
+        sys.exit(0)
+    else:
+        localServer = QLocalServer()
+        localServer.listen(appName)
+
+        tomato = Tomato(app)
+        sys.exit(app.exec_())
