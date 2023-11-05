@@ -12,10 +12,14 @@
 
 - 点击关闭按钮会最小化到托盘，右键点击托盘图标，可以选择显示主窗体或者退出程序。
 
+- <置顶>或<取消置顶>。置顶时，鼠标移出后隐藏次要信息，如按钮等，窗体半透明；鼠标移入恢复正常。
+
+![动画演示](./doc/tomato-clock-demo.gif)
+
 ### （二）软件结构
 - 主程序：tomato.py
-- 声音文件：drip.ogg，bark.ogg
-- 程序图标：tomato.svg
+- 声音文件：resource目录下
+- 程序图标：tomato.svg，已经处理成qrc，打包时不用额外考虑该资源
 
 ### (三)运行和配置
 
@@ -35,6 +39,13 @@ chmod u+x tomato.py
 ```bash
 cp Tomato.desptop /usr/share/applications/
 ```
+
+或：
+打包成可执行文件，如window下的exe文件。
+```
+pyinstaller 番茄时钟.spec
+```
+
 
 ## 二、番茄工作法的介绍
 ### （一）吃番茄的四个步骤
